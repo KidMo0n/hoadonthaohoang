@@ -819,11 +819,39 @@
 
         function parseNumber(str) {
             if (!str) return 0;
-            const cleaned = str.toString()
-                .replace(/Ä'/g, '')
-                .replace(/\s/g, '')
-                .replace(/[^\d,.-]/g, '')
-                .replace(/,/g, '');
+            
+            // Convert to string and remove all non-numeric characters except comma and dot
+            let cleaned = str.toString()
+                .replace(/Ä'/g, '')      // Remove đ symbol
+                .replace(/đ/g, '')       // Remove đ symbol
+                .replace(/\s/g, '')      // Remove spaces
+                .replace(/[^\d,.]/g, ''); // Keep only digits, comma, dot
+            
+            // Vietnamese format: 145,000 means 145000 (comma is thousands separator)
+            // Check if comma appears before last 3 digits (thousands separator)
+            if (cleaned.includes(',')) {
+                // If format is like 145,000 or 1,000,000 (comma as thousands separator)
+                const parts = cleaned.split(',');
+                
+                // Check if it's thousands separator pattern
+                // All parts after first should be exactly 3 digits
+                let isThousandsSeparator = true;
+                for (let i = 1; i < parts.length; i++) {
+                    if (parts[i].length !== 3) {
+                        isThousandsSeparator = false;
+                        break;
+                    }
+                }
+                
+                if (isThousandsSeparator) {
+                    // Remove commas - they're thousands separators
+                    cleaned = cleaned.replace(/,/g, '');
+                } else {
+                    // Keep comma as decimal separator
+                    cleaned = cleaned.replace(',', '.');
+                }
+            }
+            
             return parseFloat(cleaned) || 0;
         }
 
