@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=680, initial-scale=1.0, user-scalable=yes" id="viewport">
@@ -303,11 +304,25 @@
             border-right: none;
         }
 
-        th:nth-child(1) { width: 8%; }
-        th:nth-child(2) { width: 25%; }
-        th:nth-child(3) { width: 15%; }
-        th:nth-child(4) { width: 22%; }
-        th:nth-child(5) { width: 30%; }
+        th:nth-child(1) {
+            width: 8%;
+        }
+
+        th:nth-child(2) {
+            width: 25%;
+        }
+
+        th:nth-child(3) {
+            width: 15%;
+        }
+
+        th:nth-child(4) {
+            width: 22%;
+        }
+
+        th:nth-child(5) {
+            width: 30%;
+        }
 
         td {
             padding: 9px 6px;
@@ -497,7 +512,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* ============ EDITABLE ============ */
@@ -521,16 +538,19 @@
                 background: white;
                 padding: 0;
             }
+
             .invoice-container {
                 box-shadow: none;
                 padding: 15px;
             }
+
             .share-section {
                 display: none;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="invoice-container">
         <!-- Header -->
@@ -567,19 +587,15 @@
             <div class="customer-row">
                 <div class="customer-field">
                     <label class="customer-label">Khách hàng / Đại lý</label>
-                    <div class="customer-input large editable" 
-                         contenteditable="true" 
-                         id="customerName"
-                         data-placeholder="Nhập tên khách hàng hoặc đại lý">Tên khách hàng</div>
+                    <div class="customer-input large editable" contenteditable="true" id="customerName"
+                        data-placeholder="Nhập tên khách hàng hoặc đại lý">Tên khách hàng</div>
                 </div>
 
                 <div class="customer-field">
                     <label class="customer-label">Thông tin khách</label>
-                    <div class="customer-input editable" 
-                         contenteditable="true" 
-                         id="customerInfo"
-                         data-placeholder="Địa chỉ, số điện thoại, email..."
-                         style="white-space: pre-line;">Địa chỉ, Số điện thoại, Email</div>
+                    <div class="customer-input editable" contenteditable="true" id="customerInfo"
+                        data-placeholder="Địa chỉ, số điện thoại, email..." style="white-space: pre-line;">Địa chỉ, Số
+                        điện thoại, Email</div>
                 </div>
             </div>
         </div>
@@ -588,7 +604,8 @@
         <div class="table-header-info">
             <div class="table-header-item">
                 <span class="table-header-label">Đơn vị giao hàng:</span>
-                <span class="table-header-value editable" contenteditable="true" id="deliveryMethod">Tên đơn vị vận chuyển</span>
+                <span class="table-header-value editable" contenteditable="true" id="deliveryMethod">Tên đơn vị vận
+                    chuyển</span>
             </div>
             <div class="table-header-item">
                 <span class="table-header-label">Tổng số thùng:</span>
@@ -642,10 +659,8 @@
                 </div>
                 <div class="summary-row">
                     <span class="summary-label">Tổng phí vận chuyển:</span>
-                    <span class="summary-value editable" 
-                          contenteditable="true" 
-                          id="shippingTotal"
-                          onblur="updateGrandTotal()">0</span>
+                    <span class="summary-value editable" contenteditable="true" id="shippingTotal"
+                        onblur="updateGrandTotal()">0</span>
                 </div>
                 <div class="summary-row total-row">
                     <span class="summary-label">TỔNG CỘNG:</span>
@@ -664,13 +679,14 @@
 
         <!-- Footer -->
         <div class="footer">
-            <p><strong>Ghi chú:</strong> <span contenteditable="true" class="editable">Vui lòng kiểm tra kỹ hàng hóa trước khi nhận</span></p>
+            <p><strong>Ghi chú:</strong> <span contenteditable="true" class="editable">Vui lòng kiểm tra kỹ hàng hóa
+                    trước khi nhận</span></p>
             <p style="margin-top: 12px;">Cảm ơn quý khách đã sử dụng dịch vụ!</p>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    
+
     <script>
         let config = {
             company: {
@@ -719,7 +735,7 @@
             document.getElementById('companyAddress').textContent = config.company.address;
             document.getElementById('companyPhone').textContent = config.company.phone;
             document.getElementById('companyEmail').textContent = config.company.email;
-            
+
             const logoContainer = document.querySelector('.logo-placeholder');
             if (config.company.logoBase64) {
                 const logoImg = document.createElement('img');
@@ -728,7 +744,7 @@
                 logoContainer.innerHTML = '';
                 logoContainer.appendChild(logoImg);
             }
-            
+
             const qrContainer = document.querySelector('.qr-placeholder');
             if (config.company.qrCodeBase64) {
                 const qrImg = document.createElement('img');
@@ -741,14 +757,14 @@
 
         function populateInvoiceData() {
             const params = getUrlParams();
-            
+
             const dateText = params.date || new Date().toLocaleDateString('vi-VN');
             document.getElementById('date').textContent = dateText;
-            
+
             if (params.customerName) {
                 document.getElementById('customerName').textContent = params.customerName;
             }
-            
+
             if (params.customerInfo) {
                 const cleanInfo = params.customerInfo
                     .split('||')
@@ -757,11 +773,11 @@
                     .join('\n');
                 document.getElementById('customerInfo').textContent = cleanInfo;
             }
-            
+
             if (params.totalBoxes) {
                 document.getElementById('totalBoxes').textContent = params.totalBoxes;
             }
-            
+
             if (params.deliveryMethod) {
                 document.getElementById('deliveryMethod').textContent = params.deliveryMethod;
             }
@@ -776,7 +792,7 @@
         function populateProductsTable(params) {
             console.log('=== populateProductsTable DEBUG ===');
             console.log('Raw params:', params);
-            
+
             const codes = splitAndClean(params.productCodes, ',');
             const types = splitAndClean(params.productTypes, ',');
             const quantities = splitAndClean(params.productQuantities, ',');
@@ -791,19 +807,19 @@
             tbody.innerHTML = '';
 
             let totalShipping = 0;
-            
+
             codes.forEach((code, index) => {
                 console.log(`\n--- Processing row ${index + 1} ---`);
                 console.log('Raw price:', prices[index]);
                 console.log('Raw quantity:', quantities[index]);
-                
+
                 const cleanCode = code.includes('-') ? code.split('-')[0].trim() : code;
-                
+
                 const quantity = parseNumber(quantities[index] || 0);
                 const price = parseNumber(prices[index] || 0);
                 const shipping = parseNumber(shippingFees[index] || 0);
                 const type = types[index] || '';
-                
+
                 const amount = quantity * price;
                 totalShipping += shipping;
 
@@ -834,90 +850,76 @@
 
         function parseNumber(str) {
             if (!str) return 0;
-            
+
             console.log('=== parseNumber DEBUG ===');
             console.log('Input:', str);
             console.log('Input type:', typeof str);
             console.log('Input as string:', str.toString());
-            
+
             // Convert to string and remove all non-numeric characters except comma and dot
             let cleaned = str.toString()
                 .replace(/Ä'/g, '')      // Remove đ symbol
                 .replace(/đ/g, '')       // Remove đ symbol
                 .replace(/\s/g, '')      // Remove spaces
                 .replace(/[^\d,.]/g, ''); // Keep only digits, comma, dot
-            
+
             console.log('After cleaning:', cleaned);
-            
+
             // Vietnamese format: 145,000 means 145000 (comma is thousands separator)
             // Check if comma appears before last 3 digits (thousands separator)
-            if (cleaned.includes(',')) {
-                console.log('Has comma, checking pattern...');
-                
-                // If format is like 145,000 or 1,000,000 (comma as thousands separator)
-                const parts = cleaned.split(',');
-                console.log('Split parts:', parts);
-                
-                // Check if it's thousands separator pattern
-                // All parts after first should be exactly 3 digits
+            // Handle dot as thousands separator (Vietnamese format)
+            if (cleaned.includes('.') && !cleaned.includes(',')) {
+                const parts = cleaned.split('.');
                 let isThousandsSeparator = true;
+
                 for (let i = 1; i < parts.length; i++) {
-                    console.log(`Part ${i}: "${parts[i]}", length: ${parts[i].length}`);
                     if (parts[i].length !== 3) {
                         isThousandsSeparator = false;
                         break;
                     }
                 }
-                
-                console.log('Is thousands separator?', isThousandsSeparator);
-                
+
                 if (isThousandsSeparator) {
-                    // Remove commas - they're thousands separators
-                    cleaned = cleaned.replace(/,/g, '');
-                    console.log('Removed commas:', cleaned);
-                } else {
-                    // Keep comma as decimal separator
-                    cleaned = cleaned.replace(',', '.');
-                    console.log('Comma as decimal:', cleaned);
+                    cleaned = cleaned.replace(/\./g, '');
                 }
             }
-            
+
             const result = parseFloat(cleaned) || 0;
             console.log('Final result:', result);
             console.log('========================');
-            
+
             return result;
         }
 
         function calculateRow(element) {
             const row = element.closest('tr');
             const cells = row.cells;
-            
+
             const quantity = parseNumber(cells[2].textContent);
             const price = parseNumber(cells[3].textContent);
-            
+
             const amount = quantity * price;
-            
+
             cells[4].textContent = formatNumber(amount);
-            
+
             cells[2].textContent = quantity;
             cells[3].textContent = formatNumber(price);
-            
+
             updateTotals();
         }
 
         function updateTotals() {
             const rows = document.querySelectorAll('#itemsBody tr');
             let subtotal = 0;
-            
+
             rows.forEach(row => {
                 const amount = parseNumber(row.cells[4].textContent);
                 subtotal += amount;
             });
-            
+
             const shippingTotal = parseNumber(document.getElementById('shippingTotal').textContent);
             const grandTotal = subtotal + shippingTotal;
-            
+
             document.getElementById('subtotal').textContent = formatNumber(subtotal) + ' đ';
             document.getElementById('grandTotal').textContent = formatNumber(grandTotal) + ' đ';
         }
@@ -931,25 +933,25 @@
         function adjustViewportForMobile() {
             const screenWidth = window.screen.width;
             const isMobile = screenWidth < 680;
-            
+
             if (isMobile) {
                 const targetWidth = 680;
                 const scale = screenWidth / targetWidth;
-                
+
                 const viewport = document.getElementById('viewport');
-                viewport.setAttribute('content', 
+                viewport.setAttribute('content',
                     `width=${targetWidth}, initial-scale=${scale}, maximum-scale=2.0, user-scalable=yes`
                 );
             }
         }
-        
+
         adjustViewportForMobile();
-        
-        window.addEventListener('orientationchange', function() {
+
+        window.addEventListener('orientationchange', function () {
             setTimeout(adjustViewportForMobile, 100);
         });
-        
-        window.addEventListener('resize', function() {
+
+        window.addEventListener('resize', function () {
             adjustViewportForMobile();
         });
 
@@ -957,11 +959,11 @@
             const btn = document.getElementById('shareBtn');
             const btnText = btn.querySelector('.btn-text');
             const originalText = btnText.textContent;
-            
+
             btn.disabled = true;
             btn.classList.add('loading');
             btnText.textContent = 'Đang xử lý...';
-            
+
             if (typeof html2canvas === 'undefined') {
                 const script = document.createElement('script');
                 script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
@@ -970,21 +972,21 @@
                 document.head.appendChild(script);
                 return;
             }
-            
+
             captureAndShare(btn, btnText, originalText);
         }
-        
+
         async function captureAndShare(btn, btnText, originalText) {
             const invoiceContainer = document.querySelector('.invoice-container');
             if (!invoiceContainer) {
                 showError('❌ Không tìm thấy hóa đơn.', btn, btnText, originalText);
                 return;
             }
-            
+
             try {
                 document.body.classList.add('capturing');
                 await new Promise(resolve => setTimeout(resolve, 500));
-                
+
                 const canvas = await html2canvas(invoiceContainer, {
                     scale: 2,
                     backgroundColor: '#ffffff',
@@ -998,20 +1000,20 @@
                     scrollX: 0,
                     scrollY: 0
                 });
-                
+
                 document.body.classList.remove('capturing');
-                
+
                 canvas.toBlob(async (blob) => {
                     if (!blob) {
                         showError('❌ Không thể tạo hình ảnh.', btn, btnText, originalText);
                         return;
                     }
-                    
-                    const file = new File([blob], 'hoa-don-' + Date.now() + '.png', { 
+
+                    const file = new File([blob], 'hoa-don-' + Date.now() + '.png', {
                         type: 'image/png',
                         lastModified: Date.now()
                     });
-                    
+
                     if (navigator.share) {
                         try {
                             if (navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -1026,18 +1028,18 @@
                             console.log('Share cancelled');
                         }
                     }
-                    
+
                     const dataUrl = canvas.toDataURL('image/png', 1.0);
                     downloadImage(dataUrl, btn, btnText, originalText);
-                    
+
                 }, 'image/png', 1.0);
-                
+
             } catch (error) {
                 document.body.classList.remove('capturing');
                 showError('❌ Lỗi: ' + error.message, btn, btnText, originalText);
             }
         }
-        
+
         function downloadImage(dataUrl, btn, btnText, originalText) {
             try {
                 const a = document.createElement('a');
@@ -1046,7 +1048,7 @@
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
-                
+
                 btnText.textContent = '✅ Đã tải xuống!';
                 setTimeout(() => {
                     resetButton(btn, btnText, originalText);
@@ -1055,12 +1057,12 @@
                 showError('❌ Không thể tải xuống.', btn, btnText, originalText);
             }
         }
-        
+
         function showError(message, btn, btnText, originalText) {
             alert(message);
             resetButton(btn, btnText, originalText);
         }
-        
+
         function resetButton(btn, btnText, originalText) {
             btn.disabled = false;
             btn.classList.remove('loading');
@@ -1068,4 +1070,5 @@
         }
     </script>
 </body>
+
 </html>
