@@ -848,47 +848,127 @@
             return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
 
-        function parseNumber(str) {
-            if (!str) return 0;
+        function parseNumber(raw) {
+            if (raw === null || raw === undefined) return 0;
 
             console.log('=== parseNumber DEBUG ===');
-            console.log('Input:', str);
-            console.log('Input type:', typeof str);
-            console.log('Input as string:', str.toString());
+            console.log('Raw input:', raw);
 
-            // Convert to string and remove all non-numeric characters except comma and dot
-            let cleaned = str.toString()
-                .replace(/Ä'/g, '')      // Remove đ symbol
-                .replace(/đ/g, '')       // Remove đ symbol
-                .replace(/\s/g, '')      // Remove spaces
-                .replace(/[^\d,.]/g, ''); // Keep only digits, comma, dot
+            // 1️⃣ Convert to string & clean text
+            let cleaned = raw.toString()
+                .replace(/đ|₫/gi, '')      // remove currency symbols
+                .replace(/\s/g, '')        // remove spaces
+                .replace(/[^\d.,]/g, '');  // keep only digits, comma, dot
 
             console.log('After cleaning:', cleaned);
 
-            // Vietnamese format: 145,000 means 145000 (comma is thousands separator)
-            // Check if comma appears before last 3 digits (thousands separator)
-            // Handle dot as thousands separator (Vietnamese format)
-            if (cleaned.includes('.') && !cleaned.includes(',')) {
-                const parts = cleaned.split('.');
-                let isThousandsSeparator = true;
+            if (!cleaned) return 0;
 
+            // 2️⃣ Case: has BOTH comma and dot
+            // Example: 1,234.56 or 1.234,56
+            if (cleaned.includes(',') && cleaned.includes('.')) {
+                const lastComma = cleaned.lastIndexOf(',');
+                const lastDot = cleaned.lastIndexOf('.');
+
+                // The last separator is the decimal separator
+                if (lastComma > lastDot) {
+                    // 1.234,56  →  1234.56
+                    cleaned = cleaned.replace(/\./g, '').replace(',', '.');
+                } else {
+                    // 1,234.56  →  1234.56
+                    cleaned = cleaned.replace(/,/g, '');
+                }
+            }
+
+            // 3️⃣ Case: ONLY comma
+            else if (cleaned.includes(',')) {
+                const parts = cleaned.split(',');
+                let isThousands = true;
+
+                // all parts after first must be 3 digits
                 for (let i = 1; i < parts.length; i++) {
                     if (parts[i].length !== 3) {
-                        isThousandsSeparator = false;
+                        isThousands = false;
                         break;
                     }
                 }
 
-                if (isThousandsSeparator) {
-                    cleaned = cleaned.replace(/\./g, '');
+                if (isThousands) {
+                    // 145,000 → 145000
+                    cleaned = cleaned.replace(/,/g, '');
+                } else {
+                    // 12,5 → 12.5
+                    cleaned = cleaned.replace(',', '.');
                 }
             }
 
-            const result = parseFloat(cleaned) || 0;
+            // 4️⃣ Case: ONLY dot
+            else if (cleaned.includes('.')) {
+                const parts = cleaned.split('.');
+                let isThousands = true;
+
+                for (let i = 1; i < parts.length; i++) {
+                    if (parts[i].length !== 3) {
+                        isThousands = false;
+                        break;
+                    }
+                }
+
+                if (isThousands) {
+                    // 1.234.567 → 1234567
+                    cleaned = cleaned.replace(/\./g, '');
+                }
+                // else: 12.5 → keep as decimal
+            }
+
+            const result = Number(cleaned) || 0;
+
+            console.log('Final cleaned:', cleaned);
             console.log('Final result:', result);
             console.log('========================');
 
             return result;
+        }
+
+        if (!str) return 0;
+
+        console.log('=== parseNumber DEBUG ===');
+        console.log('Input:', str);
+        console.log('Input type:', typeof str);
+        console.log('Input as string:', str.toString());
+
+        // Convert to string and remove all non-numeric characters except comma and dot
+        let cleaned = str.toString()
+            .replace(/Ä'/g, '')      // Remove đ symbol
+            .replace(/đ/g, '')       // Remove đ symbol
+            .replace(/\s/g, '')      // Remove spaces
+            .replace(/[^\d,.]/g, ''); // Keep only digits, comma, dot
+
+        console.log('After cleaning:', cleaned);
+
+
+        // Handle dot as thousands separator (Vietnamese format)
+        if (cleaned.includes('.') && !cleaned.includes(',')) {
+            const parts = cleaned.split('.');
+            let isThousandsSeparator = true;
+
+            for (let i = 1; i < parts.length; i++) {
+                if (parts[i].length !== 3) {
+                    isThousandsSeparator = false;
+                    break;
+                }
+            }
+
+            if (isThousandsSeparator) {
+                cleaned = cleaned.replace(/\./g, '');
+            }
+        }
+
+        const result = parseFloat(cleaned) || 0;
+        console.log('Final result:', result);
+        console.log('========================');
+
+        return result;
         }
 
         function calculateRow(element) {
