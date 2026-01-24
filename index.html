@@ -774,53 +774,66 @@
         }
 
         function populateProductsTable(params) {
-            console.log('=== populateProductsTable DEBUG ===');
-            console.log('Raw params:', params);
-            
             const codes = splitAndClean(params.productCodes, ',');
             const types = splitAndClean(params.productTypes, ',');
             const quantities = splitAndClean(params.productQuantities, ',');
             const prices = splitAndClean(params.productPrices, '||');
             const shippingFees = splitAndClean(params.shippingFees, '||');
 
-            console.log('Parsed prices array:', prices);
-            console.log('Parsed quantities array:', quantities);
-            console.log('===================================');
-
             const tbody = document.getElementById('itemsBody');
             tbody.innerHTML = '';
 
-            let totalShipping = 0;
+            // GỘP CÁC SẢN PHẨM THEO MÃ CÂY + LOẠI CÂY
+            const mergedProducts = new Map(); // Key: "mã|loại", Value: {code, type, quantity, price, shipping, amount}
             
             codes.forEach((code, index) => {
-                console.log(`\n--- Processing row ${index + 1} ---`);
-                console.log('Raw price:', prices[index]);
-                console.log('Raw quantity:', quantities[index]);
-                
+                // Lấy mã cây (phần trước dấu -)
                 const cleanCode = code.includes('-') ? code.split('-')[0].trim() : code;
+                const type = types[index] || '';
+                
+                // Tạo key duy nhất: mã + loại
+                const mergeKey = `${cleanCode}|${type}`;
                 
                 const quantity = parseNumber(quantities[index] || 0);
                 const price = parseNumber(prices[index] || 0);
                 const shipping = parseNumber(shippingFees[index] || 0);
-                const type = types[index] || '';
                 
-                const amount = quantity * price;
-                totalShipping += shipping;
+                if (mergedProducts.has(mergeKey)) {
+                    // Đã tồn tại (cùng mã + cùng loại) → Cộng dồn số lượng và phí ship
+                    const existing = mergedProducts.get(mergeKey);
+                    existing.quantity += quantity;
+                    existing.shipping += shipping;
+                    existing.amount = existing.quantity * existing.price; // Tính lại thành tiền
+                } else {
+                    // Chưa tồn tại → Tạo mới
+                    mergedProducts.set(mergeKey, {
+                        code: cleanCode,
+                        type: type,
+                        quantity: quantity,
+                        price: price,
+                        shipping: shipping,
+                        amount: quantity * price
+                    });
+                }
+            });
 
-                console.log('Parsed quantity:', quantity);
-                console.log('Parsed price:', price);
-                console.log('Calculated amount:', amount);
+            let totalShipping = 0;
+            let rowNum = 1;
+
+            // Render các sản phẩm đã gộp
+            mergedProducts.forEach((product) => {
+                totalShipping += product.shipping;
 
                 const row = tbody.insertRow();
                 row.innerHTML = `
-                    <td class="text-center">${index + 1}</td>
+                    <td class="text-center">${rowNum++}</td>
                     <td class="product-code-cell">
-                        <div class="product-code-value">${cleanCode}</div>
-                        ${type ? `<div class="product-type-value">${type}</div>` : ''}
+                        <div class="product-code-value">${product.code}</div>
+                        ${product.type ? `<div class="product-type-value">${product.type}</div>` : ''}
                     </td>
-                    <td class="text-center editable" contenteditable="true" onblur="calculateRow(this)">${quantity}</td>
-                    <td class="text-right editable" contenteditable="true" onblur="calculateRow(this)">${formatNumber(price)}</td>
-                    <td class="text-right amount">${formatNumber(amount)}</td>
+                    <td class="text-center editable" contenteditable="true" onblur="calculateRow(this)">${product.quantity}</td>
+                    <td class="text-right editable" contenteditable="true" onblur="calculateRow(this)">${formatNumber(product.price)}</td>
+                    <td class="text-right amount">${formatNumber(product.amount)}</td>
                 `;
             });
 
