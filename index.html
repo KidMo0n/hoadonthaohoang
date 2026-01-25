@@ -647,6 +647,13 @@
                           id="shippingTotal"
                           onblur="updateGrandTotal()">0</span>
                 </div>
+                <div class="summary-row discount-row">
+                    <span class="summary-label">Khuyến mãi:</span>
+                    <span class="summary-value editable" 
+                          contenteditable="true" 
+                          id="discountTotal"
+                          onblur="updateGrandTotal()">0</span>
+                </div>
                 <div class="summary-row total-row">
                     <span class="summary-label">TỔNG CỘNG:</span>
                     <span class="summary-value" id="grandTotal">900,000 đ</span>
@@ -765,6 +772,12 @@
             if (params.deliveryMethod) {
                 document.getElementById('deliveryMethod').textContent = params.deliveryMethod;
             }
+            
+            // Load discount nếu có trong URL
+            if (params.discount) {
+                const discountValue = parseNumber(params.discount);
+                document.getElementById('discountTotal').textContent = formatNumber(discountValue);
+            }
 
             if (params.productCodes && params.productQuantities && params.productPrices) {
                 populateProductsTable(params);
@@ -783,28 +796,36 @@
             const tbody = document.getElementById('itemsBody');
             tbody.innerHTML = '';
 
+            console.log('=== MERGE DEBUG ===');
+
             // GỘP CÁC SẢN PHẨM THEO MÃ CÂY + LOẠI CÂY
             const mergedProducts = new Map(); // Key: "mã|loại", Value: {code, type, quantity, price, shipping, amount}
             
             codes.forEach((code, index) => {
-                // Lấy mã cây (phần trước dấu -)
-                const cleanCode = code.includes('-') ? code.split('-')[0].trim() : code;
-                const type = types[index] || '';
+                // Lấy mã cây (phần trước dấu - đầu tiên)
+                const cleanCode = code.includes('-') ? code.split('-')[0].trim() : code.trim();
                 
-                // Tạo key duy nhất: mã + loại
+                // Normalize loại cây: trim và replace nhiều khoảng trắng thành 1
+                const type = (types[index] || '').trim().replace(/\s+/g, ' ');
+                
+                // Tạo key duy nhất: mã + loại (cả 2 đều đã normalize)
                 const mergeKey = `${cleanCode}|${type}`;
+                
+                console.log(`Row ${index}: Code="${cleanCode}", Type="${type}", Key="${mergeKey}"`);
                 
                 const quantity = parseNumber(quantities[index] || 0);
                 const price = parseNumber(prices[index] || 0);
                 const shipping = parseNumber(shippingFees[index] || 0);
                 
                 if (mergedProducts.has(mergeKey)) {
+                    console.log(`  → MERGE! Adding ${quantity} to existing`);
                     // Đã tồn tại (cùng mã + cùng loại) → Cộng dồn số lượng và phí ship
                     const existing = mergedProducts.get(mergeKey);
                     existing.quantity += quantity;
                     existing.shipping += shipping;
                     existing.amount = existing.quantity * existing.price; // Tính lại thành tiền
                 } else {
+                    console.log(`  → NEW entry`);
                     // Chưa tồn tại → Tạo mới
                     mergedProducts.set(mergeKey, {
                         code: cleanCode,
@@ -816,6 +837,9 @@
                     });
                 }
             });
+
+            console.log('Final merged products:', mergedProducts);
+            console.log('==================');
 
             let totalShipping = 0;
             let rowNum = 1;
@@ -922,7 +946,10 @@
             });
             
             const shippingTotal = parseNumber(document.getElementById('shippingTotal').textContent);
-            const grandTotal = subtotal + shippingTotal;
+            const discountTotal = parseNumber(document.getElementById('discountTotal').textContent);
+            
+            // TỔNG CỘNG = Tổng cây + Phí ship - Khuyến mãi
+            const grandTotal = subtotal + shippingTotal - discountTotal;
             
             document.getElementById('subtotal').textContent = formatNumber(subtotal) + ' đ';
             document.getElementById('grandTotal').textContent = formatNumber(grandTotal) + ' đ';
@@ -988,6 +1015,15 @@
             }
             
             try {
+                // Ẩn dòng khuyến mãi nếu = 0
+                const discountRow = document.querySelector('.discount-row');
+                const discountValue = parseNumber(document.getElementById('discountTotal').textContent);
+                const wasHidden = discountValue === 0;
+                
+                if (wasHidden) {
+                    discountRow.style.display = 'none';
+                }
+                
                 document.body.classList.add('capturing');
                 await new Promise(resolve => setTimeout(resolve, 500));
                 
@@ -1004,6 +1040,11 @@
                     scrollX: 0,
                     scrollY: 0
                 });
+                
+                // Hiện lại dòng khuyến mãi sau khi capture
+                if (wasHidden) {
+                    discountRow.style.display = '';
+                }
                 
                 document.body.classList.remove('capturing');
                 
