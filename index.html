@@ -102,45 +102,6 @@
             margin: 1px 0;
         }
 
-        .qr-section {
-            flex: 0 0 60px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .qr-placeholder {
-            width: 60px;
-            height: 60px;
-            background: white;
-            border: 2px solid #0d3d0d;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #0d3d0d;
-            font-size: 8px;
-            text-align: center;
-            padding: 5px;
-            font-weight: 700;
-            box-shadow: 0 3px 10px rgba(13, 61, 13, 0.25);
-            overflow: hidden;
-        }
-
-        .qr-placeholder img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .qr-label {
-            margin-top: 4px;
-            font-size: 8px;
-            color: #333;
-            font-weight: 600;
-            text-align: center;
-        }
-
         /* ============ INVOICE TITLE ============ */
         .invoice-title {
             text-align: center;
@@ -148,45 +109,43 @@
             font-weight: 700;
             color: white;
             margin: 15px 0;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            padding: 12px;
             background: linear-gradient(135deg, #0d3d0d 0%, #1b5e20 100%);
-            border-radius: 8px;
-            box-shadow: 0 3px 10px rgba(13, 61, 13, 0.3);
+            padding: 8px 0;
+            border-radius: 6px;
+            letter-spacing: 1.5px;
+            box-shadow: 0 3px 8px rgba(13, 61, 13, 0.3);
         }
 
-        /* ============ DATE DISPLAY ============ */
+        /* ============ DATE & CUSTOMER INFO ============ */
         .invoice-info-wrapper {
-            margin-bottom: 15px;
+            margin: 12px 0;
         }
 
         .date-display {
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .date-value {
             font-size: 13px;
+            color: #333;
             font-weight: 600;
-            color: #0d3d0d;
-            letter-spacing: 0.5px;
         }
 
-        /* ============ CUSTOMER INFO ============ */
         .customer-info-wrapper {
-            margin-bottom: 15px;
+            margin: 12px 0 15px 0;
         }
 
         .customer-row {
             display: flex;
             gap: 15px;
-            margin-bottom: 0;
         }
 
         .customer-field {
             flex: 1;
-            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
         }
 
         .customer-label {
@@ -195,22 +154,19 @@
             color: #0d3d0d;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 6px;
-            display: block;
-            opacity: 0.8;
         }
 
         .customer-input {
-            width: 100%;
             background: white;
             border: 2px solid #0d3d0d;
-            border-radius: 6px;
-            padding: 10px 12px;
+            border-radius: 5px;
+            padding: 8px 10px;
             font-size: 12px;
-            color: #1a1a1a;
-            line-height: 1.5;
-            transition: all 0.2s ease;
+            color: #333;
             min-height: 75px;
+            transition: all 0.3s ease;
+            word-wrap: break-word;
+            white-space: pre-wrap;
         }
 
         .customer-input.large {
@@ -223,14 +179,13 @@
             outline: none;
             background: #f0f8f1;
             border-color: #1b5e20;
-            box-shadow: 0 0 0 3px rgba(27, 94, 32, 0.1);
+            box-shadow: 0 0 0 3px rgba(13, 61, 13, 0.1);
         }
 
-        .customer-input:empty::before {
+        .customer-input[contenteditable]:empty:before {
             content: attr(data-placeholder);
             color: #999;
             font-style: italic;
-            font-weight: 400;
         }
 
         /* ============ TABLE HEADER INFO ============ */
@@ -238,115 +193,122 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin: 12px 0;
             padding: 8px 12px;
-            background: #f8f9fa;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
-            margin-bottom: 10px;
+            background: #f8f8f8;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
         }
 
         .table-header-item {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            font-size: 11px;
         }
 
         .table-header-label {
             font-weight: 700;
-            color: #0d3d0d;
-            font-size: 9px;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
+            color: #333;
         }
 
         .table-header-value {
             font-weight: 600;
-            color: #1a1a1a;
-            font-size: 11px;
+            color: #0d3d0d;
+            padding: 3px 8px;
+            background: white;
+            border-radius: 3px;
+            border: 1px solid #d0d0d0;
+        }
+
+        .table-header-value.editable {
+            cursor: text;
+        }
+
+        .table-header-value.editable:focus {
+            outline: 2px solid #0d3d0d;
+            background: #f0f8f1;
         }
 
         /* ============ TABLE ============ */
         .table-container {
             margin: 15px 0;
             overflow-x: auto;
+            border-radius: 6px;
+            border: 2px solid #0d3d0d;
         }
 
-        .table-container::-webkit-scrollbar {
-            display: none;
-        }
-
-        table {
+        #itemsTable {
             width: 100%;
             border-collapse: collapse;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            border: 2px solid #0d3d0d;
+            background: white;
             table-layout: fixed;
         }
 
-        thead {
+        #itemsTable thead {
             background: linear-gradient(135deg, #0d3d0d 0%, #1b5e20 100%);
             color: white;
         }
 
-        th {
-            padding: 10px 6px;
-            text-align: left;
-            font-weight: 700;
+        #itemsTable th {
+            padding: 8px;
             font-size: 9px;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.3px;
-            border-right: 1px solid rgba(255, 255, 255, 0.2);
-            word-wrap: break-word;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        th:last-child {
-            border-right: none;
-        }
+        #itemsTable th:nth-child(1) { width: 8%; }  /* STT */
+        #itemsTable th:nth-child(2) { width: 25%; } /* MÃ CÂY / LOẠI */
+        #itemsTable th:nth-child(3) { width: 15%; } /* SỐ LƯỢNG */
+        #itemsTable th:nth-child(4) { width: 22%; } /* ĐƠN GIÁ */
+        #itemsTable th:nth-child(5) { width: 30%; } /* THÀNH TIỀN */
 
-        th:nth-child(1) { width: 8%; }
-        th:nth-child(2) { width: 25%; }
-        th:nth-child(3) { width: 15%; }
-        th:nth-child(4) { width: 22%; }
-        th:nth-child(5) { width: 30%; }
-
-        td {
-            padding: 9px 6px;
-            border-bottom: 1px solid #e0e0e0;
-            border-right: 1px solid #e0e0e0;
-            color: #1a1a1a;
-            font-weight: 500;
+        #itemsTable td {
+            padding: 8px;
             font-size: 11px;
-            word-wrap: break-word;
+            font-weight: 500;
+            border: 1px solid #e0e0e0;
+            color: #333;
         }
 
-        td:last-child {
-            border-right: none;
-        }
-
-        tbody tr:hover {
-            background-color: #f1f8f4;
-        }
-
-        tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        .text-right {
-            text-align: right;
+        #itemsTable tbody tr:hover {
+            background: #f8f8f8;
         }
 
         .text-center {
             text-align: center;
         }
 
+        .text-right {
+            text-align: right;
+        }
+
+        .amount {
+            font-weight: 700;
+            color: #0d3d0d;
+        }
+
+        .editable {
+            cursor: text;
+            background: white;
+            transition: background 0.2s;
+        }
+
+        .editable:focus {
+            outline: 2px solid #0d3d0d;
+            background: #fffef0;
+        }
+
         .product-code-cell {
-            padding: 8px 6px !important;
+            padding: 6px 8px;
         }
 
         .product-code-value {
-            color: #1a1a1a;
-            font-size: 12px;
             font-weight: 700;
+            color: #0d3d0d;
+            font-size: 11px;
             line-height: 1.3;
         }
 
@@ -367,10 +329,50 @@
             border: 2px solid #0d3d0d;
             display: flex;
             justify-content: flex-end;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            min-height: 170px;
+        }
+
+        .qr-container {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: calc(100% - 340px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-placeholder {
+            width: 150px;
+            height: 150px;
+            background: white;
+            border: 2px solid #0d3d0d;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0d3d0d;
+            font-size: 11px;
+            text-align: center;
+            padding: 10px;
+            font-weight: 700;
+            box-shadow: 0 3px 10px rgba(13, 61, 13, 0.25);
+            overflow: hidden;
+        }
+
+        .qr-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .summary-content {
-            width: 280px;
+            width: 320px;
+            z-index: 1;
         }
 
         .summary-row {
@@ -398,7 +400,6 @@
             font-size: 12px;
         }
 
-        /* Editable shipping value */
         .summary-value.editable {
             background: white;
             border: 1px solid #d0d0d0;
@@ -455,18 +456,20 @@
             color: white;
             border: none;
             padding: 12px 30px;
-            border-radius: 6px;
-            cursor: pointer;
             font-size: 13px;
             font-weight: 700;
-            transition: all 0.3s;
-            box-shadow: 0 3px 12px rgba(13, 61, 13, 0.3);
-            position: relative;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(13, 61, 13, 0.3);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .share-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 18px rgba(13, 61, 13, 0.4);
+            box-shadow: 0 6px 16px rgba(13, 61, 13, 0.4);
         }
 
         .share-btn:active {
@@ -476,58 +479,24 @@
         .share-btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
-            transform: none;
-        }
-
-        .spinner {
-            display: none;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto;
         }
 
         .share-btn.loading .spinner {
             display: inline-block;
-            margin-right: 8px;
-            vertical-align: middle;
+        }
+
+        .spinner {
+            display: none;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
-        }
-
-        /* ============ EDITABLE ============ */
-        .editable {
-            background: white;
-            border: 1px solid #d0d0d0;
-            padding: 5px;
-            border-radius: 3px;
-            min-height: 18px;
-            color: #1a1a1a;
-        }
-
-        .editable:focus {
-            outline: 2px solid #0d3d0d;
-            background: #f0f8f1;
-            border-color: #0d3d0d;
-        }
-
-        @media print {
-            body {
-                background: white;
-                padding: 0;
-            }
-            .invoice-container {
-                box-shadow: none;
-                padding: 15px;
-            }
-            .share-section {
-                display: none;
-            }
         }
     </style>
 </head>
@@ -536,7 +505,7 @@
         <!-- Header -->
         <div class="header">
             <div class="logo-section">
-                <div class="logo-placeholder">LOGO<br>VƯỜN CÂY</div>
+                <div class="logo-placeholder">LOGO</div>
             </div>
             <div class="company-info">
                 <div class="company-name" id="companyName">VƯỜN CÂY XANH</div>
@@ -545,10 +514,6 @@
                     <div id="companyPhone">Điện thoại: 0909 123 456</div>
                     <div id="companyEmail">Email: vuoncayxanh@example.com</div>
                 </div>
-            </div>
-            <div class="qr-section">
-                <div class="qr-placeholder">QR CODE</div>
-                <div class="qr-label">SCAN ME!</div>
             </div>
         </div>
 
@@ -596,7 +561,7 @@
             </div>
         </div>
 
-        <!-- Items Table -->
+        <!-- Product Table -->
         <div class="table-container">
             <table id="itemsTable">
                 <thead>
@@ -635,6 +600,9 @@
 
         <!-- Summary -->
         <div class="summary-section">
+            <div class="qr-container">
+                <div class="qr-placeholder" id="qrCode">QR CODE</div>
+            </div>
             <div class="summary-content">
                 <div class="summary-row">
                     <span class="summary-label">Tổng thành tiền (cây):</span>
@@ -693,27 +661,23 @@
         function getUrlParams() {
             const params = new URLSearchParams(window.location.search);
             return {
-                date: params.get('date') || '',
-                customerName: params.get('customerName') || '',
-                customerInfo: params.get('customerInfo') || '',
-                totalBoxes: params.get('totalBoxes') || '',
-                deliveryMethod: params.get('deliveryMethod') || '',
-                productCodes: params.get('productCodes') || '',
-                productTypes: params.get('productTypes') || '',
-                productQuantities: params.get('productQuantities') || '',
-                productPrices: params.get('productPrices') || '',
-                shippingFees: params.get('shippingFees') || ''
+                date: params.get('date'),
+                customerName: params.get('customerName'),
+                customerInfo: params.get('customerInfo'),
+                totalBoxes: params.get('totalBoxes'),
+                deliveryMethod: params.get('deliveryMethod'),
+                productCodes: params.get('productCodes'),
+                productTypes: params.get('productTypes'),
+                productQuantities: params.get('productQuantities'),
+                productPrices: params.get('productPrices'),
+                shippingFees: params.get('shippingFees'),
+                discount: params.get('discount')
             };
         }
 
-        function cleanData(str) {
-            if (!str) return str;
-            return str.replace(/Ä'/g, '').trim();
-        }
-
-        function splitAndClean(str, separator) {
+        function splitAndClean(str, delimiter) {
             if (!str) return [];
-            return str.split(separator).map(item => cleanData(item));
+            return str.split(delimiter).map(s => s.trim()).filter(s => s.length > 0);
         }
 
         async function loadConfig() {
@@ -773,10 +737,18 @@
                 document.getElementById('deliveryMethod').textContent = params.deliveryMethod;
             }
             
-            // Load discount nếu có trong URL
             if (params.discount) {
-                const discountValue = parseNumber(params.discount);
-                document.getElementById('discountTotal').textContent = formatNumber(discountValue);
+                let cleanDiscount = params.discount
+                    .replace(/Ä'/g, '')
+                    .replace(/đ/g, '')
+                    .replace(/\s/g, '')
+                    .trim();
+                
+                const discountValue = parseNumber(cleanDiscount);
+                
+                if (discountValue > 0) {
+                    document.getElementById('discountTotal').textContent = formatNumber(discountValue);
+                }
             }
 
             if (params.productCodes && params.productQuantities && params.productPrices) {
@@ -796,37 +768,23 @@
             const tbody = document.getElementById('itemsBody');
             tbody.innerHTML = '';
 
-            console.log('=== MERGE DEBUG ===');
-
-            // GỘP CÁC SẢN PHẨM THEO MÃ CÂY + LOẠI CÂY
-            const mergedProducts = new Map(); // Key: "mã|loại", Value: {code, type, quantity, price, shipping, amount}
+            const mergedProducts = new Map();
             
             codes.forEach((code, index) => {
-                // Lấy mã cây (phần trước dấu - đầu tiên)
                 const cleanCode = code.includes('-') ? code.split('-')[0].trim() : code.trim();
-                
-                // Normalize loại cây: trim và replace nhiều khoảng trắng thành 1
                 const type = (types[index] || '').trim().replace(/\s+/g, ' ');
-                
-                // Tạo key duy nhất: mã + loại (cả 2 đều đã normalize)
                 const mergeKey = `${cleanCode}|${type}`;
-                
-                console.log(`Row ${index}: Code="${cleanCode}", Type="${type}", Key="${mergeKey}"`);
                 
                 const quantity = parseNumber(quantities[index] || 0);
                 const price = parseNumber(prices[index] || 0);
                 const shipping = parseNumber(shippingFees[index] || 0);
                 
                 if (mergedProducts.has(mergeKey)) {
-                    console.log(`  → MERGE! Adding ${quantity} to existing`);
-                    // Đã tồn tại (cùng mã + cùng loại) → Cộng dồn số lượng và phí ship
                     const existing = mergedProducts.get(mergeKey);
                     existing.quantity += quantity;
                     existing.shipping += shipping;
-                    existing.amount = existing.quantity * existing.price; // Tính lại thành tiền
+                    existing.amount = existing.quantity * existing.price;
                 } else {
-                    console.log(`  → NEW entry`);
-                    // Chưa tồn tại → Tạo mới
                     mergedProducts.set(mergeKey, {
                         code: cleanCode,
                         type: type,
@@ -838,13 +796,9 @@
                 }
             });
 
-            console.log('Final merged products:', mergedProducts);
-            console.log('==================');
-
             let totalShipping = 0;
             let rowNum = 1;
 
-            // Render các sản phẩm đã gộp
             mergedProducts.forEach((product) => {
                 totalShipping += product.shipping;
 
@@ -872,20 +826,10 @@
         function parseNumber(str) {
             if (!str) return 0;
             
-            // Convert to string and clean basic stuff
             let cleaned = str.toString()
-                .replace(/Ä'/g, '')      // Remove đ symbol (encoding error)
-                .replace(/đ/g, '')       // Remove đ symbol
-                .replace(/\s/g, '');     // Remove spaces
-            
-            // CRITICAL FIX: Handle BOTH comma and dot as thousands separators
-            // Desktop URL: đ145,000  → 145000
-            // Mobile URL:  đ145.000  → 145000
-            // Decimal:     145.50    → 145.5
-            
-            // Strategy: Find last separator (comma or dot)
-            // If exactly 3 digits after it → thousands separator → remove all
-            // Otherwise → decimal separator → keep as decimal point
+                .replace(/Ä'/g, '')
+                .replace(/đ/g, '')
+                .replace(/\s/g, '');
             
             const lastCommaIndex = cleaned.lastIndexOf(',');
             const lastDotIndex = cleaned.lastIndexOf('.');
@@ -894,26 +838,18 @@
             if (lastSeparatorIndex !== -1) {
                 const afterSeparator = cleaned.substring(lastSeparatorIndex + 1);
                 
-                // Check: exactly 3 digits after last separator?
                 if (/^\d{3}$/.test(afterSeparator)) {
-                    // YES → It's thousands separator (145,000 or 145.000)
-                    // Remove ALL commas and dots
                     cleaned = cleaned.replace(/[,.]/g, '');
                 } else {
-                    // NO → It's decimal separator (145.5 or 145,50)
-                    // Keep last separator as decimal point, remove others
                     if (lastCommaIndex === lastSeparatorIndex) {
-                        // Last is comma → convert to dot
                         cleaned = cleaned.substring(0, lastCommaIndex) + '.' + cleaned.substring(lastCommaIndex + 1);
-                        cleaned = cleaned.replace(/,/g, ''); // Remove other commas
+                        cleaned = cleaned.replace(/,/g, '');
                     } else {
-                        // Last is dot → keep it
-                        cleaned = cleaned.replace(/,/g, ''); // Remove commas only
+                        cleaned = cleaned.replace(/,/g, '');
                     }
                 }
             }
             
-            // Final cleanup: remove any remaining non-numeric except dot
             cleaned = cleaned.replace(/[^\d.]/g, '');
             
             return parseFloat(cleaned) || 0;
@@ -948,7 +884,6 @@
             const shippingTotal = parseNumber(document.getElementById('shippingTotal').textContent);
             const discountTotal = parseNumber(document.getElementById('discountTotal').textContent);
             
-            // TỔNG CỘNG = Tổng cây + Phí ship - Khuyến mãi
             const grandTotal = subtotal + shippingTotal - discountTotal;
             
             document.getElementById('subtotal').textContent = formatNumber(subtotal) + ' đ';
@@ -1015,7 +950,6 @@
             }
             
             try {
-                // Ẩn dòng khuyến mãi nếu = 0
                 const discountRow = document.querySelector('.discount-row');
                 const discountValue = parseNumber(document.getElementById('discountTotal').textContent);
                 const wasHidden = discountValue === 0;
@@ -1041,7 +975,6 @@
                     scrollY: 0
                 });
                 
-                // Hiện lại dòng khuyến mãi sau khi capture
                 if (wasHidden) {
                     discountRow.style.display = '';
                 }
@@ -1054,58 +987,51 @@
                         return;
                     }
                     
-                    const file = new File([blob], 'hoa-don-' + Date.now() + '.png', { 
-                        type: 'image/png',
-                        lastModified: Date.now()
-                    });
+                    const file = new File([blob], 'hoa-don.png', { type: 'image/png' });
                     
-                    if (navigator.share) {
+                    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
                         try {
-                            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                                await navigator.share({
-                                    title: 'Hóa Đơn',
-                                    files: [file]
-                                });
+                            await navigator.share({
+                                files: [file],
+                                title: 'Hóa đơn',
+                                text: 'Hóa đơn vườn cây'
+                            });
+                            resetButton(btn, btnText, originalText);
+                        } catch (err) {
+                            if (err.name !== 'AbortError') {
+                                downloadImage(blob, btn, btnText, originalText);
+                            } else {
                                 resetButton(btn, btnText, originalText);
-                                return;
                             }
-                        } catch (shareError) {
-                            console.log('Share cancelled');
                         }
+                    } else {
+                        downloadImage(blob, btn, btnText, originalText);
                     }
-                    
-                    const dataUrl = canvas.toDataURL('image/png', 1.0);
-                    downloadImage(dataUrl, btn, btnText, originalText);
-                    
-                }, 'image/png', 1.0);
+                }, 'image/png');
                 
             } catch (error) {
-                document.body.classList.remove('capturing');
-                showError('❌ Lỗi: ' + error.message, btn, btnText, originalText);
+                console.error('Capture error:', error);
+                showError('❌ Có lỗi xảy ra: ' + error.message, btn, btnText, originalText);
             }
         }
         
-        function downloadImage(dataUrl, btn, btnText, originalText) {
-            try {
-                const a = document.createElement('a');
-                a.href = dataUrl;
-                a.download = 'hoa-don-' + Date.now() + '.png';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                
-                btnText.textContent = '✅ Đã tải xuống!';
-                setTimeout(() => {
-                    resetButton(btn, btnText, originalText);
-                }, 2000);
-            } catch (error) {
-                showError('❌ Không thể tải xuống.', btn, btnText, originalText);
-            }
+        function downloadImage(blob, btn, btnText, originalText) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `hoa-don-${new Date().getTime()}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            btnText.textContent = '✅ Đã tải xuống!';
+            setTimeout(() => resetButton(btn, btnText, originalText), 2000);
         }
         
         function showError(message, btn, btnText, originalText) {
-            alert(message);
-            resetButton(btn, btnText, originalText);
+            btnText.textContent = message;
+            setTimeout(() => resetButton(btn, btnText, originalText), 3000);
         }
         
         function resetButton(btn, btnText, originalText) {
