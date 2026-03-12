@@ -512,7 +512,7 @@
                 <div class="company-details">
                     <div id="companyAddress">123 Đường Lạc Long Quân, Phường 10, Quận Tân Bình, TP.HCM</div>
                     <div id="companyPhone">Điện thoại: 0909 123 456</div>
-                    <div id="companyEmail">Email: vuoncayxanh@example.com</div>
+                    <div id="companyEmail">Email: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a3d5d6cccdc0c2dadbc2cdcbe3c6dbc2ced3cfc68dc0ccce">[email&#160;protected]</a></div>
                 </div>
             </div>
         </div>
@@ -644,7 +644,7 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <script>
         let config = {
@@ -768,23 +768,31 @@
             const tbody = document.getElementById('itemsBody');
             tbody.innerHTML = '';
 
+            // GỘP CHỈ KHI: MÃ CÂY + LOẠI CÂY + ĐƠN GIÁ ĐỀU GIỐNG NHAU
             const mergedProducts = new Map();
             
             codes.forEach((code, index) => {
+                // Lấy mã cây (phần trước dấu - đầu tiên)
                 const cleanCode = code.includes('-') ? code.split('-')[0].trim() : code.trim();
+                
+                // Normalize loại cây: trim và replace nhiều khoảng trắng thành 1
                 const type = (types[index] || '').trim().replace(/\s+/g, ' ');
-                const mergeKey = `${cleanCode}|${type}`;
                 
                 const quantity = parseNumber(quantities[index] || 0);
                 const price = parseNumber(prices[index] || 0);
                 const shipping = parseNumber(shippingFees[index] || 0);
                 
+                // Tạo key duy nhất: mã + loại + đơn giá
+                const mergeKey = `${cleanCode}|${type}|${price}`;
+                
                 if (mergedProducts.has(mergeKey)) {
+                    // Đã tồn tại (cùng mã + cùng loại + cùng giá) → Cộng dồn
                     const existing = mergedProducts.get(mergeKey);
                     existing.quantity += quantity;
                     existing.shipping += shipping;
                     existing.amount = existing.quantity * existing.price;
                 } else {
+                    // Chưa tồn tại → Tạo mới
                     mergedProducts.set(mergeKey, {
                         code: cleanCode,
                         type: type,
@@ -1033,12 +1041,3 @@
             btnText.textContent = message;
             setTimeout(() => resetButton(btn, btnText, originalText), 3000);
         }
-        
-        function resetButton(btn, btnText, originalText) {
-            btn.disabled = false;
-            btn.classList.remove('loading');
-            btnText.textContent = originalText;
-        }
-    </script>
-</body>
-</html>
