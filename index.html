@@ -1010,8 +1010,8 @@
                         try {
                             await navigator.share({
                                 files: [file],
-                                title: 'Phiếu hàng',
-                                text: 'Phiếu hàng Thảo Hoàng'
+                                title: document.title,
+                                text: document.title
                             });
                             resetButton(btn, btnText, originalText);
                         } catch (err) {
