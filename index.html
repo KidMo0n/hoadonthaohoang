@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=680, initial-scale=1.0, user-scalable=yes" id="viewport">
-    <title>Hóa Đơn Vườn Cây</title>
+    <title>Phiếu Hàng</title>
     <style>
         * {
             margin: 0;
@@ -518,7 +518,7 @@
         </div>
 
         <!-- Invoice Title -->
-        <div class="invoice-title">HÓA ĐƠN</div>
+        <div class="invoice-title" id="invoiceTitle">PHIẾU HÀNG</div>
 
         <!-- Date Display -->
         <div class="invoice-info-wrapper">
@@ -633,7 +633,7 @@
         <div class="share-section">
             <button class="share-btn" onclick="shareInvoice()" id="shareBtn">
                 <span class="spinner"></span>
-                <span class="btn-text">📤 CHIA SẺ HÌNH ẢNH HÓA ĐƠN</span>
+                <span class="btn-text">📤 CHIA SẺ HÌNH ẢNH PHIẾU HÀNG</span>
             </button>
         </div>
 
@@ -728,6 +728,15 @@
                     .join('\n');
                 document.getElementById('customerInfo').textContent = cleanInfo;
             }
+
+            // Cập nhật tiêu đề phiếu hàng động
+            const titleParts = ['PHIẾU HÀNG'];
+            if (dateText) titleParts.push('NGÀY ' + dateText);
+            const customerName = params.customerName ? params.customerName.trim() : '';
+            const customerInfo = params.customerInfo ? params.customerInfo.split('||')[0].trim() : '';
+            if (customerName) titleParts.push(customerName);
+            if (customerInfo && customerInfo !== customerName) titleParts.push(customerInfo);
+            document.title = titleParts.join(' - ');
             
             if (params.totalBoxes) {
                 document.getElementById('totalBoxes').textContent = params.totalBoxes;
@@ -953,7 +962,7 @@
         async function captureAndShare(btn, btnText, originalText) {
             const invoiceContainer = document.querySelector('.invoice-container');
             if (!invoiceContainer) {
-                showError('❌ Không tìm thấy hóa đơn.', btn, btnText, originalText);
+                showError('❌ Không tìm thấy phiếu hàng.', btn, btnText, originalText);
                 return;
             }
             
@@ -995,14 +1004,14 @@
                         return;
                     }
                     
-                    const file = new File([blob], 'hoa-don.png', { type: 'image/png' });
+                    const file = new File([blob], 'phieu-hang.png', { type: 'image/png' });
                     
                     if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
                         try {
                             await navigator.share({
                                 files: [file],
-                                title: 'Hóa đơn',
-                                text: 'Hóa đơn vườn cây'
+                                title: 'Phiếu hàng',
+                                text: 'Phiếu hàng Thảo Hoàng'
                             });
                             resetButton(btn, btnText, originalText);
                         } catch (err) {
@@ -1027,7 +1036,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `hoa-don-${new Date().getTime()}.png`;
+            a.download = `phieu-hang-${new Date().getTime()}.png`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
