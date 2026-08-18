@@ -338,7 +338,12 @@
             align-items: center;
             gap: 20px;
             position: relative;
-            min-height: 205px;
+            min-height: 195px;   /* chừa chỗ cho ô tick trên màn hình */
+        }
+
+        /* Khi chụp ảnh, ô tick bị ẩn -> trả chiều cao về đúng như bản gốc */
+        body.capturing .summary-section {
+            min-height: 170px;
         }
 
         .qr-container {
@@ -352,36 +357,6 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-        }
-
-        /* Chú thích dưới mã QR */
-        .qr-caption {
-            max-width: 172px;
-            font-size: 9px;
-            line-height: 1.45;
-            color: #555;
-            text-align: center;
-        }
-
-        .qr-caption b {
-            display: block;
-            color: #0d3d0d;
-            font-size: 10px;
-            font-weight: 700;
-        }
-
-        .qr-badge-htx {
-            display: block;
-            width: max-content;
-            margin: 4px auto 2px;
-            padding: 2px 6px;
-            background: #0d3d0d;
-            color: #fff;
-            border-radius: 3px;
-            font-size: 8.5px;
-            font-weight: 700;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
         }
 
         /* Ô tick chọn mã QR — có class no-capture nên không lên ảnh chia sẻ */
@@ -674,7 +649,6 @@
         <div class="summary-section">
             <div class="qr-container">
                 <div class="qr-placeholder" id="qrCode">QR CODE</div>
-                <div class="qr-caption" id="qrCaption"></div>
                 <label class="qr-toggle no-capture" title="Bật khi khách cần xuất hoá đơn VAT — tiền phải vào tài khoản Hợp tác xã">
                     <input type="checkbox" id="qrHtxTick">
                     <span>Dùng mã QR <b>Hợp tác xã</b> (VAT)</span>
@@ -858,26 +832,22 @@
             const isHtx = document.getElementById('qrHtxTick').checked;
             const src = isHtx ? config.company.qrCodeHtxBase64 : config.company.qrCodeBase64;
             const box = document.getElementById('qrCode');
-            const cap = document.getElementById('qrCaption');
 
             box.innerHTML = '';
             // Thiếu mã thì để trống hẳn, KHÔNG rơi về mã còn lại
             // — tránh khách VAT chuyển vào tài khoản cá nhân.
             if (!src) {
-                box.textContent = 'CHƯA CÓ MÃ QR' + (isHtx ? ' HỢP TÁC XÃ' : '');
-                cap.innerHTML = '';
+                // Chữ báo thiếu để trung tính, không nói đang chọn mã nào
+                box.textContent = 'CHƯA CÓ MÃ QR';
+                if (isHtx) console.warn('[Phiếu hàng] Thiếu config.company.qrCodeHtxBase64.');
                 return;
             }
             const img = document.createElement('img');
             img.src = src;
             img.alt = 'Mã QR';
             box.appendChild(img);
-
-            cap.innerHTML = isHtx
-                ? '<b>Quét mã để chuyển khoản</b>'
-                  + '<span class="qr-badge-htx">Tài khoản Hợp tác xã</span>'
-                  + 'Dùng cho đơn có xuất hoá đơn VAT.'
-                : '<b>Quét mã để chuyển khoản</b>';
+            // Không ghi chú gì dưới mã: phiếu chụp ra trông y như cũ,
+            // không lộ đang dùng tài khoản nào.
         }
 
         function populateInvoiceData() {
